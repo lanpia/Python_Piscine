@@ -1,19 +1,24 @@
 import sys
 
-# 첫 번째 인수는 항상 스크립트 이름입니다
-script_name = sys.argv[0]
+def check_odd_or_even():
+		# 인자가 하나인지 확인
+		if len(sys.argv) != 2:
+				raise AssertionError("more than one argument is provided" \
+														if len(sys.argv) > 2 \
+														else "argument is not an integer")
 
-# 나머지 인수들
-arguments = sys.argv[1:]
+		try:
+				# 문자열을 정수로 변환 시도
+				num = int(sys.argv[1])
+		except ValueError:
+				# 정수로 변환할 수 없는 경우
+				raise AssertionError("argument is not an integer")
 
-# 인수 출력
-print(f"스크립트 이름: {script_name}")
+		# 홀수, 짝수 여부 확인
+		if num % 2 == 0:
+				print("I'm Even.")
+		else:
+				print("I'm Odd.")
 
-if len(sys.argv) - 1 != 1:
-	print("AssertionError: more than one argument is provided")
-else :
-      print((type(sys.argv[1])))
-      if type(sys.argv) != int:
-            print("AssertionError: argument is not an integer")
-      else :
-            print(f"argv: {enumerate(arguments, 1)}")
+if __name__ == "__main__":
+		check_odd_or_even()
