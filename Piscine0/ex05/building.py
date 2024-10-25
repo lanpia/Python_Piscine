@@ -16,14 +16,16 @@ def count_characters(text: str) -> None:
 	print(f"{digit_count} digits")
 
 def main():
-	if len(sys.argv) == 1:
-			text = input("What is the text to count?\n")
-	elif len(sys.argv) == 2:
-			text = sys.argv[1]
-	else:
-			raise AssertionError("more than one argument is provided")
-
-	count_characters(text)
+	try:
+		if len(sys.argv) == 1:
+				text = input("What is the text to count?\n")
+		elif len(sys.argv) == 2:
+				text = sys.argv[1]
+		else:
+				raise AssertionError("more than one argument is provided")
+		count_characters(text)
+	except AssertionError as e:
+		print(f"AssertionError: {e}")
 
 if __name__ == "__main__":
 	main()
