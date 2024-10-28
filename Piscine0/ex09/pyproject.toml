@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ft_package"
+version = "0.0.1"
+description = "A sample test package for counting items in a list."
+authors = [{name = "Your Name", email = "your_email@example.com"}]
+dependencies = []
