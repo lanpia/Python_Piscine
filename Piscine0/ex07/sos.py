@@ -1,6 +1,5 @@
 import sys
 
-
 def convertMorseCode(text: str) -> str:
     """
     convertMorseCode

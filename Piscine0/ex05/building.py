@@ -2,6 +2,9 @@ import sys
 import string
 
 def count_characters(text: str) -> None:
+    """
+This function is count characters.
+    """
 	upper_count = sum(1 for char in text if char.isupper())
 	lower_count = sum(1 for char in text if char.islower())
 	digit_count = sum(1 for char in text if char.isdigit())

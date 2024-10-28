@@ -3,6 +3,37 @@ import time
 import shutil
 
 def ft_tqdm(iterable):
+	"""
+Decorate an iterable object, returning an iterator which acts exactly
+like the original iterable, but prints a dynamically updating
+progressbar every time a value is requested.
+
+Parameters
+----------
+iterable  : iterable, optional
+	Iterable to decorate with a progressbar.
+	Leave blank to manually manage the updates.
+desc  : str, optional
+	Prefix for the progressbar.
+total  : int or float, optional
+	The number of expected iterations. If unspecified,
+	len(iterable) is used if possible. If float("inf") or as a last
+	resort, only basic progress statistics are displayed
+	(no ETA, no progressbar).
+	If `gui` is True and this parameter needs subsequent updating,
+	specify an initial arbitrary large positive number,
+	e.g. 9e9.
+leave  : bool, optional
+	If [default: True], keeps all traces of the progressbar
+	upon termination of iteration.
+	If `None`, will leave only if `position` is `0`.
+file  : `io.TextIOWrapper` or `io.StringIO`, optional
+...
+Returns
+-------
+out  : decorated iterator.
+
+	"""
 	total = len(iterable)  # 전체 작업 수
 	start_time = time.time()  # 시작 시간 기록
 
