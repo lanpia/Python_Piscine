@@ -1,14 +1,14 @@
 import numpy as np
 
-def give_bmi(height: list[int | float],
-            weight: list[int | float]) -> list[int | float]:
+
+def give_bmi(height: list[int | float], weight: list[int | float]) -> list[int | float]:
     """주어진 신장(height)과 체중(weight)을 통해 각각의 BMI를 계산하여
     numpy 배열로 반환합니다."""
     height_array = np.array(height, dtype=float)
     weight_array = np.array(weight, dtype=float)
     if height_array.size != weight_array.size:
         raise ValueError("Height and weight lists must be of the same length.")
-    bmi_array = weight_array / (height_array ** 2)
+    bmi_array = weight_array / (height_array**2)
     return bmi_array
 
 
