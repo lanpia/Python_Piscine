@@ -1,60 +1,36 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from load_csv import load
 
-def compare_population(country1: str, country2: str) -> None:
-    """
-    두 국가의 연도별 인구 데이터를 비교하여 시각화합니다.
-    """
-    # 데이터 로드
-    data = load("population_total.csv")
-    if data is None:
-        print("Error: Failed to load the dataset.")
-        return
+def millions_formatter(x, _):
+    """Chart y-axis formatter for population data."""
+    return f"{int(x / 1_000_000)}M"
 
-    data = data.set_index("country")  # 국가를 인덱스로 설정
-    france_data = data.loc[country1].T  # 프랑스 데이터
-    belgium_data = data.loc[country2].T  # 벨기에 데이터
-
-    # 데이터프레임 생성
-    france_df = pd.DataFrame({
+def compare_population(country1: str, country2: str):
+    """Compare the population of two countries over time."""
+    data = pd.read_csv("population_total.csv")
+    data = data.set_index("country")
+    france_data = data.loc[country1].T
+    belgium_data = data.loc[country2].T
+    df1 = pd.DataFrame({
         "Year": france_data.index.astype(int),
         "Population": france_data.values,
-        "Country": "France"
+        "Country": country1
     })
-    belgium_df = pd.DataFrame({
+    df2 = pd.DataFrame({
         "Year": belgium_data.index.astype(int),
         "Population": belgium_data.values,
-        "Country": "Belgium"
+        "Country": country2
     })
-
-    # 데이터 병합
-    combined_data = pd.concat([france_df, belgium_df])
-
-    # 그래프 스타일 설정
+    combined_data = pd.concat([df1, df2])
     sns.set_theme(style="white")
-
-    # Seaborn 라인플롯
-    sns.lineplot(
-        data=combined_data,
-        x="Year",
-        y="Population",
-        hue="Country",
-        marker="o"
-    )
-
-    # 그래프 제목과 레이블
-    plt.title("Population Comparison: France vs Belgium", fontsize=16)
-    plt.xlabel("Year", fontsize=12)
-    plt.ylabel("Population", fontsize=12)
-    plt.legend(title="Country")
-    plt.tight_layout()
-    # 그래프 표시
+    sns.lineplot(data=combined_data, x="Year", y="Population", hue="Country", marker="o")
+    plt.title("Population Projecctions", fontsize=16)
+    plt.xlim(1800, 2050)
     plt.show()
 
-def main() -> None:
-    compare_population("France", "Belgium")
+def main():
+	compare_population("Belgium", "France")
 
 if __name__ == "__main__":
-    main()
+	main()
