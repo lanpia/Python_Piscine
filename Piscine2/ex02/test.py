@@ -1,24 +1,8 @@
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import pandas as pd
+from load_csv import load
 
-
-def load(path: str) -> object:
-    """주어진 경로(path)의 CSV 파일을 읽어 데이터 크기를 출력하고, 데이터를 반환합니다.
-    파일이 없거나 형식이 잘못된 경우 None을 반환합니다."""
-    try:
-        data = pd.read_csv(path)
-        print(data.shape)
-        return data
-    except FileNotFoundError:
-        print(f"Error: File not found at path '{path}'.")
-        return None
-    except pd.errors.ParserError:
-        print("Error: File is not a valid CSV format.")
-        return None
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        return None
 def main():
     """load the life expectancy dataset and,
     display the country information of your campus."""

@@ -1,6 +1,7 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from load_csv import load
 
 def millions_formatter(x, _):
     """Chart y-axis formatter for population data."""
@@ -8,7 +9,7 @@ def millions_formatter(x, _):
 
 def compare_population(country1: str, country2: str):
     """Compare the population of two countries over time."""
-    data = pd.read_csv("population_total.csv")
+    data = load("population_total.csv")
     data = data.set_index("country")
     france_data = data.loc[country1].T
     belgium_data = data.loc[country2].T
