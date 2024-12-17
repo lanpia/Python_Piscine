@@ -5,12 +5,18 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
 
-def millions_formatter(value):
-    """Convert a string representation of a population to an integer.
-    Examples:
-        - '3.25M' -> 3250000
-        - '1.2B'  -> 1200000000
-        - '400k'  -> 400000"""
+def millions_formatter(value, pos):
+    """Convert a population integer to a string representation with appropriate suffix."""
+    if value >= 1_000_000_000:
+        return f'{value / 1_000_000_000:.1f}B'
+    elif value >= 1_000_000:
+        return f'{value / 1_000_000:.1f}M'
+    elif value >= 1_000:
+        return f'{value / 1_000:.1f}k'
+    return str(value)
+
+def population_to_int(value):
+    """Convert a string representation of a population to an integer."""
     if "M" in value:
         return int(float(value.replace("M", "")) * 1_000_000)
     elif "B" in value:
@@ -23,13 +29,13 @@ def millions_formatter(value):
         except ValueError:
             raise ValueError(f"Invalid population format: {value}")
 
-
 def compare_population(data: pd.DataFrame, country1: str, country2: str):
     """load the life expectancy dataset and,
     display the country information of your campus."""
     data = data.set_index("country")
-    data = data.map(millions_formatter)
+    data = data.applymap(lambda x: x if pd.isna(x) else int(x))
     country1_data = data.loc[country1].T
+    country1_data = country1_data[(country1_data.index.astype(int) >= 1800) & (country1_data.index.astype(int) <= 2050)]
     country1_df = pd.DataFrame({
         "Year": country1_data.index.astype(int),
         "Population": country1_data.values,
@@ -37,6 +43,7 @@ def compare_population(data: pd.DataFrame, country1: str, country2: str):
     })
 
     country2_data = data.loc[country2].T
+    country2_data = country2_data[(country2_data.index.astype(int) >= 1800) & (country2_data.index.astype(int) <= 2050)]
     country2_df = pd.DataFrame({
         "Year": country2_data.index.astype(int),
         "Population": country2_data.values,
@@ -45,25 +52,21 @@ def compare_population(data: pd.DataFrame, country1: str, country2: str):
 
     combined_data = pd.concat([country1_df, country2_df])
 
-    sns.set_theme(style="whitegrid")
-    plt.figure(figsize=(10, 6))
-
     sns.lineplot(
         data=combined_data,
         x="Year",
         y="Population",
-        hue="Country",
-        marker="o"
+        hue="Country"
     )
 
     ax = plt.gca()
     ax.yaxis.set_major_formatter(FuncFormatter(millions_formatter))
+    plt.xticks(range(1800, 2051, 40))
 
-    plt.title(f"Population Comparison: {country1} vs {country2}")
+    plt.title("Population projections")
     plt.xlabel("Year")
     plt.ylabel("Population")
-    plt.legend(title="Country")
-    plt.tight_layout()
+    plt.legend()
 
     plt.show()
 
