@@ -1,35 +1,52 @@
-from load_csv import load
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from load_csv import load
+from matplotlib.ticker import FuncFormatter
 
-def plot_life_expectancy_vs_gdp():
-    # Load the data
-    gdp_data = load("in-come_per_person_gdppercapita_ppp_inflation_adjusted.csv")
-    life_expectancy_data = load("life_expectancy_years.csv")
 
-    # Filter data for the year 1900
-    gdp_1900 = gdp_data[["country", "1900"]].rename(columns={"1900": "GDP"})
-    life_expectancy_1900 = life_expectancy_data[["country", "1900"]].rename(columns={"1900": "Life Expectancy"})
+def millions_formatter(value, pos):
+    """Convert a population integer to a string representation with appropriate suffix."""
+    if value >= 1_000_000_000:
+        return f'{int(value / 1_000_000_000)}B'
+    elif value >= 1_000_000:
+        return f'{int(value / 1_000_000)}M'
+    elif value >= 1_000:
+        return f'{int(value / 1_000)}k'
+    return str(int(value))
 
-    # Merge the data on the country column
-    merged_data = pd.merge(gdp_1900, life_expectancy_1900, on="country").dropna()
+def draw_projection(dgdp: pd.DataFrame, dlife: pd.DataFrame):
+    """Draw a scatter plot of GDP vs Life Expectancy in 1900."""
 
-    # Plot the data
-    plt.figure(figsize=(10, 6))
-    sns.scatterplot(data=merged_data, x="GDP", y="Life Expectancy", hue="country")
+    merged_data = pd.merge(
+        dgdp[["country", "1900"]].rename(columns={"1900": "GDP"}),
+        dlife[["country", "1900"]].rename(columns={"1900": "Life Expectancy"}),
+        on="country"
+    )
 
-    # Add titles and labels
-    plt.title("Life Expectancy vs GDP in 1900")
-    plt.xlabel("GDP per Person (PPP, Inflation Adjusted)")
-    plt.ylabel("Life Expectancy (Years)")
-    plt.legend(title="Country", bbox_to_anchor=(1.05, 1), loc='upper left')
+    filtered_data = merged_data.dropna()
+    sns.scatterplot(
+        data=filtered_data,
+        x="GDP",
+        y="Life Expectancy",
+        hue=None,
+        size=None
+    )
 
-    plt.tight_layout()
+    ax = plt.gca()
+    ax.set_xscale("log")
+    ax.xaxis.set_major_formatter(FuncFormatter(millions_formatter))
+    plt.xticks([300, 1000, 10000])
+    plt.title("1900")
+    plt.xlabel("Gross Domestic Product")
+    plt.ylabel("Life Expectancy")
     plt.show()
 
 def main():
-    plot_life_expectancy_vs_gdp()
+    draw_projection(
+        load("income_per_person_gdppercapita_ppp_inflation_adjusted.csv"), 
+        load("life_expectancy_years.csv")
+    )
 
 if __name__ == "__main__":
     main()
