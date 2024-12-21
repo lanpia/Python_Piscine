@@ -4,7 +4,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
-
 def millions_formatter(value, pos):
     """Convert a population integer to a string representation with appropriate suffix."""
     if value >= 1_000_000_000:
@@ -17,23 +16,27 @@ def millions_formatter(value, pos):
 
 def population_to_int(value):
     """Convert a string representation of a population to an integer."""
-    if "M" in value:
-        return int(float(value.replace("M", "")) * 1_000_000)
-    elif "B" in value:
-        return int(float(value.replace("B", "")) * 1_000_000_000)
-    elif "k" in value:
-        return int(float(value.replace("k", "")) * 1_000)
-    else:
-        try:
-            return int(value)
-        except ValueError:
-            raise ValueError(f"Invalid population format: {value}")
+    if pd.isna(value):
+        return value
+    if isinstance(value, str):
+        if "M" in value:
+            return int(float(value.replace("M", "")) * 1_000_000)
+        elif "B" in value:
+            return int(float(value.replace("B", "")) * 1_000_000_000)
+        elif "k" in value:
+            return int(float(value.replace("k", "")) * 1_000)
+        else:
+            try:
+                return int(value)
+            except ValueError:
+                raise ValueError(f"Invalid population format: {value}")
+    return int(value)
 
 def compare_population(data: pd.DataFrame, country1: str, country2: str):
-    """load the life expectancy dataset and,
-    display the country information of your campus."""
+    """Load the life expectancy dataset and display the country information of your campus."""
     data = data.set_index("country")
-    data = data.applymap(lambda x: x if pd.isna(x) else int(x))
+    data = data.applymap(population_to_int)
+
     country1_data = data.loc[country1].T
     country1_data = country1_data[(country1_data.index.astype(int) >= 1800) & (country1_data.index.astype(int) <= 2050)]
     country1_df = pd.DataFrame({
